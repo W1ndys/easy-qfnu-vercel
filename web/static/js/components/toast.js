@@ -31,25 +31,25 @@ window.Toast = {
     const config = {
       success: {
         emoji: '🎉',
-        iconBg: 'bg-[#34C759]/15',
+        iconBg: 'bg-success/15',
         titleColor: 'text-[#1C1C1E]',
         msgColor: 'text-[#3C3C43]/60'
       },
       error: {
         emoji: '💣',
-        iconBg: 'bg-[#FF3B30]/15',
+        iconBg: 'bg-danger/15',
         titleColor: 'text-[#1C1C1E]',
         msgColor: 'text-[#3C3C43]/60'
       },
       warning: {
         emoji: '🔔',
-        iconBg: 'bg-[#FF9500]/15',
+        iconBg: 'bg-warning/15',
         titleColor: 'text-[#1C1C1E]',
         msgColor: 'text-[#3C3C43]/60'
       },
       info: {
         emoji: '🦄',
-        iconBg: 'bg-[#007AFF]/15',
+        iconBg: 'bg-info/15',
         titleColor: 'text-[#1C1C1E]',
         msgColor: 'text-[#3C3C43]/60'
       }
@@ -62,7 +62,7 @@ window.Toast = {
 
     // 构建内容结构
     toast.innerHTML = `
-      <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-lg ${style.iconBg} backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
+      <div class="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-lg ${style.iconBg} backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
         ${style.emoji}
       </div>
       <div class="flex flex-col min-w-0">

@@ -286,17 +286,17 @@ function updateAPIList(data) {
     container.innerHTML = data.map((item, index) => `
         <div class="px-4 py-3 flex items-center gap-3">
             <span class="w-6 h-6 flex items-center justify-center rounded-lg text-[11px] font-semibold
-                ${index < 3 ? 'bg-[#885021] text-white' : 'bg-[#E5E5EA] dark:bg-[#38383A] text-[#8E8E93]'}">
+                ${index < 3 ? 'bg-primary text-white' : 'bg-[#E5E5EA] dark:bg-[#38383A] text-[#8E8E93]'}">
                 ${index + 1}
             </span>
             <div class="flex-1 min-w-0">
                 <div class="text-[15px] text-[#1C1C1E] dark:text-white truncate" title="${item.path}">${item.path}</div>
                 <div class="w-full bg-[#E5E5EA] dark:bg-[#38383A] rounded-full h-1 mt-1.5">
-                    <div class="bg-[#885021] h-1 rounded-full progress-bar" style="width: ${(item.count / maxCount * 100).toFixed(1)}%"></div>
+                    <div class="bg-primary h-1 rounded-full progress-bar" style="width: ${(item.count / maxCount * 100).toFixed(1)}%"></div>
                 </div>
             </div>
             <div class="text-right shrink-0">
-                <div class="text-[15px] font-semibold text-[#885021]">${formatNumber(item.count)}</div>
+                <div class="text-[15px] font-semibold text-primary">${formatNumber(item.count)}</div>
                 <div class="text-[11px] text-[#8E8E93]">${item.avgLatency.toFixed(0)}ms</div>
             </div>
         </div>
@@ -318,16 +318,16 @@ function updateKeywordList(data) {
     container.innerHTML = data.map((item, index) => `
         <div class="px-4 py-3 flex items-center gap-3">
             <span class="w-6 h-6 flex items-center justify-center rounded-lg text-[11px] font-semibold
-                ${index < 3 ? 'bg-[#007AFF] text-white' : 'bg-[#E5E5EA] dark:bg-[#38383A] text-[#8E8E93]'}">
+                ${index < 3 ? 'bg-info text-white' : 'bg-[#E5E5EA] dark:bg-[#38383A] text-[#8E8E93]'}">
                 ${index + 1}
             </span>
             <div class="flex-1 min-w-0">
                 <div class="text-[15px] text-[#1C1C1E] dark:text-white truncate" title="${item.keyword}">${item.keyword}</div>
                 <div class="w-full bg-[#E5E5EA] dark:bg-[#38383A] rounded-full h-1 mt-1.5">
-                    <div class="bg-[#007AFF] h-1 rounded-full progress-bar" style="width: ${(item.searchCount / maxCount * 100).toFixed(1)}%"></div>
+                    <div class="bg-info h-1 rounded-full progress-bar" style="width: ${(item.searchCount / maxCount * 100).toFixed(1)}%"></div>
                 </div>
             </div>
-            <div class="text-[15px] font-semibold text-[#007AFF] shrink-0">${formatNumber(item.searchCount)}</div>
+            <div class="text-[15px] font-semibold text-info shrink-0">${formatNumber(item.searchCount)}</div>
         </div>
     `).join('');
 }
