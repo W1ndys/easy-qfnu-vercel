@@ -21,7 +21,7 @@
         <!-- 顶部提示 -->
         <div class="bg-primary/5 border border-primary/10 rounded-2xl p-4 mb-6">
             <div class="flex items-start">
-                <svg class="w-5 h-5 text-primary mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-primary mr-3 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div>
@@ -33,7 +33,7 @@
 
         <!-- 选项卡切换 -->
         <div class="bg-[#E5E5EA] dark:bg-[#2C2C2E] rounded-xl p-0.5 flex relative mb-6">
-            <div class="absolute bg-white dark:bg-[#1C1C1E] rounded-lg shadow-sm transition-all duration-[250ms] h-[calc(100%-4px)] w-1/2 top-0.5 left-0.5"
+            <div class="absolute bg-white dark:bg-[#1C1C1E] rounded-lg shadow-sm transition-all duration-250 h-[calc(100%-4px)] w-1/2 top-0.5 left-0.5"
                 :class="currentTab === 'query' ? 'translate-x-0' : 'translate-x-full'"></div>
 
             <button @click="currentTab = 'query'"
@@ -62,7 +62,7 @@
                             class="input-field pl-10"
                             placeholder="搜索课程名称或教师姓名...">
                     </div>
-                    <button @click="search()" :disabled="loading" class="btn-primary flex items-center justify-center min-w-[100px] shadow-md">
+                    <button @click="search()" :disabled="loading" class="btn-primary flex items-center justify-center min-w-25 shadow-md">
                         <template x-if="loading">
                             <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -148,7 +148,7 @@
                         <!-- 所属校区 -->
                         <div>
                             <label class="block text-[15px] font-medium text-[#1C1C1E] mb-2">所属校区 <span class="text-danger">*</span></label>
-                            <select x-model="form.campus" class="input-field appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%20stroke%3D%22%236b7280%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22M6%208l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-no-repeat bg-[right_0.75rem_center]">
+                            <select x-model="form.campus" class="input-field appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%20stroke%3D%22%236b7280%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22M6%208l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-size-[1.25rem_1.25rem] bg-no-repeat bg-position-[right_0.75rem_center]">
                                 <option value="" disabled selected>请选择校区</option>
                                 <option value="曲阜">曲阜校区</option>
                                 <option value="日照">日照校区</option>
