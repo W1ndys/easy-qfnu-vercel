@@ -173,7 +173,7 @@
         </div>
 
         <!-- 学年/学期统计 -->
-        <div x-show="yearStats.length > 0" x-transition class="card mb-4 !py-3">
+        <div x-show="yearStats.length > 0" x-transition class="card mb-4 py-3!">
             <div class="flex items-center justify-between mb-2">
                 <h2 class="text-[15px] font-semibold text-[#1C1C1E] flex items-center">
                     <svg class="w-4 h-4 mr-1.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,10 +186,10 @@
                 <div class="segment-control">
                     <button @click="statView = 'year'"
                         :class="statView === 'year' ? 'segment-item-active' : 'segment-item-inactive'"
-                        class="segment-item text-[12px] !px-2 !py-0.5">学年</button>
+                        class="segment-item text-[12px] px-2! py-0.5!">学年</button>
                     <button @click="statView = 'semester'"
                         :class="statView === 'semester' ? 'segment-item-active' : 'segment-item-inactive'"
-                        class="segment-item text-[12px] !px-2 !py-0.5">学期</button>
+                        class="segment-item text-[12px] px-2! py-0.5!">学期</button>
                 </div>
             </div>
             <!-- 学年统计 -->
@@ -222,7 +222,7 @@
 
         <!-- 自定义计算区 -->
         <div x-show="grades.length > 0" x-transition
-            class="bg-gradient-to-r from-primary to-primary-lighter rounded-xl shadow-md p-3 mb-4 text-white sticky top-4 z-10">
+            class="bg-linear-to-r from-primary to-primary-lighter rounded-xl shadow-md p-3 mb-4 text-white sticky top-4 z-10">
             <div class="flex items-center justify-between mb-2">
                 <h2 class="text-[14px] font-semibold flex items-center">
                     <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,7 +294,7 @@
                                 <h3 class="font-semibold text-[#1C1C1E] leading-tight text-[15px]" x-text="grade.course_name"></h3>
                                 <p class="text-[11px] text-[#8E8E93] mt-1" x-text="grade.course_code"></p>
                             </div>
-                            <div :class="getScoreClass(grade.score)" class="text-[22px] font-bold min-w-[60px] text-right"
+                            <div :class="getScoreClass(grade.score)" class="text-[22px] font-bold min-w-15 text-right"
                                 x-text="grade.score || '--'"></div>
                         </div>
 
@@ -326,7 +326,7 @@
 
         <!-- 空状态 -->
         <div x-show="result && grades.length === 0" x-transition class="card p-16 text-center">
-            <svg class="w-[120px] h-[120px] mx-auto text-[#C7C7CC] mb-5 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-30 h-30 mx-auto text-[#C7C7CC] mb-5 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                 </path>
@@ -337,7 +337,7 @@
 
         <!-- 错误提示 -->
         <div x-show="errorMsg" x-transition class="bg-danger/10 text-danger p-4 rounded-2xl border border-danger/20 mt-4 flex items-start">
-            <svg class="w-5 h-5 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 mr-3 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                     clip-rule="evenodd"></path>

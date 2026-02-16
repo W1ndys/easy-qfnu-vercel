@@ -98,7 +98,7 @@
         </div>
 
         <!-- 统计信息 -->
-        <div x-show="exams.length > 0" x-transition class="card mb-4 !py-3">
+        <div x-show="exams.length > 0" x-transition class="card mb-4 py-3!">
             <div class="flex items-center justify-between">
                 <div class="flex items-center text-[15px]">
                     <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,7 +176,7 @@
 
         <!-- 空状态 -->
         <div x-show="result && exams.length === 0" x-transition class="card p-16 text-center">
-            <svg class="w-[120px] h-[120px] mx-auto text-[#C7C7CC] mb-5 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-30 h-30 mx-auto text-[#C7C7CC] mb-5 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
                 </path>
@@ -187,7 +187,7 @@
 
         <!-- 错误提示 -->
         <div x-show="errorMsg" x-transition class="bg-danger/10 text-danger p-4 rounded-2xl border border-danger/20 mt-4 flex items-start">
-            <svg class="w-5 h-5 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 mr-3 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                     clip-rule="evenodd"></path>
