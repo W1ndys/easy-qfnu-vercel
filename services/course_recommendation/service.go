@@ -136,24 +136,42 @@ func Review(recommendationID int64, isVisible bool) error {
 }
 
 // GetAll 获取所有课程推荐（管理员用，包含不可见的）
-func GetAll(page, pageSize int, status string) ([]model.CourseRecommendation, int64, error) {
+func GetAll(page, pageSize int, status string, courseName string, teacherName string) ([]model.CourseRecommendation, int64, error) {
 	db := database.GetCourseRecDB()
 	if db == nil {
 		return nil, 0, errors.New("数据库连接失败")
 	}
 
 	// 构建查询条件
-	whereSQL := ""
+	var conditions []string
+	var args []interface{}
+
 	if status == "pending" {
-		whereSQL = "WHERE is_visible = 0"
+		conditions = append(conditions, "is_visible = 0")
 	} else if status == "approved" {
-		whereSQL = "WHERE is_visible = 1"
+		conditions = append(conditions, "is_visible = 1")
+	}
+
+	if courseName != "" {
+		conditions = append(conditions, "course_name LIKE ?")
+		args = append(args, "%"+courseName+"%")
+	}
+
+	if teacherName != "" {
+		conditions = append(conditions, "teacher_name LIKE ?")
+		args = append(args, "%"+teacherName+"%")
+	}
+
+	// 构建 WHERE 子句
+	whereSQL := ""
+	if len(conditions) > 0 {
+		whereSQL = "WHERE " + joinConditions(conditions, " AND ")
 	}
 
 	// 1. 获取总数
 	var total int64
 	countQuery := "SELECT COUNT(*) FROM course_recommendations " + whereSQL
-	err := db.QueryRow(countQuery).Scan(&total)
+	err := db.QueryRow(countQuery, args...).Scan(&total)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -168,7 +186,10 @@ func GetAll(page, pageSize int, status string) ([]model.CourseRecommendation, in
 		LIMIT ? OFFSET ?
 	`
 
-	rows, err := db.Query(query, pageSize, offset)
+	// 分页参数追加到 args 末尾
+	queryArgs := append(args, pageSize, offset)
+
+	rows, err := db.Query(query, queryArgs...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -187,6 +208,18 @@ func GetAll(page, pageSize int, status string) ([]model.CourseRecommendation, in
 		return []model.CourseRecommendation{}, total, nil
 	}
 	return list, total, nil
+}
+
+// joinConditions 将条件用指定分隔符连接
+func joinConditions(conditions []string, separator string) string {
+	result := ""
+	for i, c := range conditions {
+		if i > 0 {
+			result += separator
+		}
+		result += c
+	}
+	return result
 }
 
 // Delete 删除课程推荐（管理员用）

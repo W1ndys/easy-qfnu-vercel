@@ -94,8 +94,10 @@ func GetAll(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "6"))
 	status := c.DefaultQuery("status", "pending")
+	courseName := c.Query("course_name")
+	teacherName := c.Query("teacher_name")
 
-	list, total, err := services.GetAll(page, pageSize, status)
+	list, total, err := services.GetAll(page, pageSize, status, courseName, teacherName)
 	if err != nil {
 		response.Fail(c, "获取失败: "+err.Error())
 		return
