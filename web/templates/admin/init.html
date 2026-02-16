@@ -16,17 +16,17 @@
             <div>
                 <label class="block text-[13px] font-medium text-[#1C1C1E] mb-2">管理员密码</label>
                 <input type="password" x-model="adminPassword" placeholder="用于登录管理后台" autocomplete="new-password"
-                    class="w-full bg-[#E5E5EA] border-none rounded-xl px-4 py-3 text-[15px] text-[#1C1C1E] placeholder-[#C7C7CC] transition-all duration-200 focus:bg-white focus:ring-2 focus:ring-[#885021]/10 focus:outline-none">
+                    class="w-full bg-[#E5E5EA] border-none rounded-xl px-4 py-3 text-[15px] text-[#1C1C1E] placeholder-[#C7C7CC] transition-all duration-200 focus:bg-white focus:ring-2 focus:ring-primary/10 focus:outline-none">
             </div>
 
             <div>
                 <label class="block text-[13px] font-medium text-[#1C1C1E] mb-2">访问密码</label>
                 <input type="password" x-model="sitePassword" placeholder="用户访问功能页面时验证" autocomplete="new-password"
-                    class="w-full bg-[#E5E5EA] border-none rounded-xl px-4 py-3 text-[15px] text-[#1C1C1E] placeholder-[#C7C7CC] transition-all duration-200 focus:bg-white focus:ring-2 focus:ring-[#885021]/10 focus:outline-none">
+                    class="w-full bg-[#E5E5EA] border-none rounded-xl px-4 py-3 text-[15px] text-[#1C1C1E] placeholder-[#C7C7CC] transition-all duration-200 focus:bg-white focus:ring-2 focus:ring-primary/10 focus:outline-none">
             </div>
 
             <button type="submit" :disabled="loading"
-                class="w-full bg-[#885021] text-white rounded-xl px-6 py-3 text-[15px] font-semibold transition-all duration-150 ease-out active:bg-[#5D3615] active:scale-[0.98] disabled:opacity-50 mt-6">
+                class="w-full bg-primary text-white rounded-xl px-6 py-3 text-[15px] font-semibold transition-all duration-150 ease-out active:bg-primary-dark active:scale-[0.98] disabled:opacity-50 mt-6">
                 <span x-show="!loading">完成初始化</span>
                 <span x-show="loading" class="flex items-center justify-center gap-2">
                     <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -40,7 +40,7 @@
 
         <!-- 错误提示 -->
         <p x-show="error" x-text="error"
-            class="mt-4 text-center text-[13px] text-[#FF3B30] transition-all duration-250"></p>
+            class="mt-4 text-center text-[13px] text-danger transition-all duration-250"></p>
     </div>
 </div>
 {{ end }}
