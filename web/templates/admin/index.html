@@ -345,6 +345,39 @@
                     </div>
                 </div>
 
+                <!-- 搜索栏 -->
+                <div class="mb-4 flex flex-col sm:flex-row gap-3">
+                    <!-- 课程名称搜索框 -->
+                    <div class="flex-1 bg-white rounded-xl shadow-sm flex items-center px-3">
+                        <svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" x-model="searchCourseName" placeholder="搜索课程名称..."
+                            @keyup.enter="searchRecommendations()"
+                            class="w-full bg-transparent border-none px-3 py-2.5 text-[15px] text-[#1C1C1E] placeholder-[#C7C7CC] focus:outline-none">
+                    </div>
+                    <!-- 教师姓名搜索框 -->
+                    <div class="flex-1 bg-white rounded-xl shadow-sm flex items-center px-3">
+                        <svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <input type="text" x-model="searchTeacherName" placeholder="搜索教师姓名..."
+                            @keyup.enter="searchRecommendations()"
+                            class="w-full bg-transparent border-none px-3 py-2.5 text-[15px] text-[#1C1C1E] placeholder-[#C7C7CC] focus:outline-none">
+                    </div>
+                    <!-- 搜索和重置按钮 -->
+                    <div class="flex gap-2 shrink-0">
+                        <button @click="searchRecommendations()"
+                            class="flex-1 sm:flex-none bg-[#885021] text-white px-5 py-2.5 rounded-xl text-[15px] font-medium transition-all duration-150 hover:bg-[#6D4019] active:bg-[#5D3615] active:scale-[0.98]">
+                            搜索
+                        </button>
+                        <button @click="resetSearch()"
+                            class="flex-1 sm:flex-none bg-[#E5E5EA] text-[#1C1C1E] px-5 py-2.5 rounded-xl text-[15px] font-medium transition-all duration-150 hover:bg-[#D1D1D6] active:bg-[#C7C7CC]">
+                            重置
+                        </button>
+                    </div>
+                </div>
+
                 <!-- 推荐列表 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     <template x-for="r in recommendations" :key="r.id">
@@ -609,6 +642,8 @@ function adminPanel() {
         announcements: [],
         recommendations: [],
         recommendationFilter: 'pending',
+        searchCourseName: '',
+        searchTeacherName: '',
         pagination: {
             page: 1,
             pageSize: 6,
@@ -687,7 +722,9 @@ function adminPanel() {
                     params: {
                         page: this.pagination.page,
                         page_size: this.pagination.pageSize,
-                        status: this.recommendationFilter
+                        status: this.recommendationFilter,
+                        course_name: this.searchCourseName,
+                        teacher_name: this.searchTeacherName
                     }
                 });
                 const data = res.data.data;
@@ -706,6 +743,18 @@ function adminPanel() {
 
         changeFilter(status) {
             this.recommendationFilter = status;
+            this.pagination.page = 1;
+            this.loadRecommendations();
+        },
+
+        searchRecommendations() {
+            this.pagination.page = 1;
+            this.loadRecommendations();
+        },
+
+        resetSearch() {
+            this.searchCourseName = '';
+            this.searchTeacherName = '';
             this.pagination.page = 1;
             this.loadRecommendations();
         },
