@@ -79,6 +79,9 @@ func installAPIRoutes(r *gin.Engine) {
 			courseRecGroup.GET("/query", course_recommendation.Query)
 			courseRecGroup.POST("/recommend", course_recommendation.Recommend)
 		}
+
+		// 教务系统登录接口（公开，不需要认证）
+		apiV1.POST("/zhjw/login", zhjw.Login)
 	}
 
 	// 【受保护接口组】 (Protected)
@@ -144,6 +147,9 @@ func installStaticRoutes(r *gin.Engine, webFS embed.FS) {
 	})
 	r.GET("/access", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "access.html", nil)
+	})
+	r.GET("/login", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "login.html", nil)
 	})
 
 	// 管理后台页面

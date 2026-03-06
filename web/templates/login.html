@@ -1,0 +1,252 @@
+{{ define "title" }}登录教务系统 - 曲奇API{{ end }}
+{{ define "head" }}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{{ end }}
+{{ define "body" }}
+    <!-- JS 模块 -->
+    <script src="/static/js/components/toast.js"></script>
+    <script src="/static/js/utils/storage.js"></script>
+
+    <div x-data="loginApp()" x-cloak class="max-w-md mx-auto px-4 py-8">
+        <!-- 标题 -->
+        <header class="mb-8 text-center">
+            <h1 class="text-[28px] font-bold text-[#1C1C1E] leading-tight">登录教务系统</h1>
+            <p class="text-[#8E8E93] mt-2 text-[15px]">
+                <a href="/" class="hover:text-primary transition-colors">曲奇API</a>
+            </p>
+        </header>
+
+        <!-- 登录卡片 -->
+        <div class="card">
+            <!-- 验证码图片 -->
+            <div class="mb-4">
+                <label class="block text-[15px] font-medium text-[#1C1C1E] mb-2">验证码</label>
+                <div class="flex items-center gap-3">
+                    <img
+                        :src="captchaUrl"
+                        @click="refreshCaptcha()"
+                        class="h-12 rounded-lg cursor-pointer border border-[#E5E5EA] hover:border-primary transition-colors"
+                        alt="验证码"
+                    />
+                    <button
+                        @click="refreshCaptcha()"
+                        class="text-[13px] text-primary hover:underline"
+                    >
+                        点击刷新
+                    </button>
+                </div>
+                <p class="text-[11px] text-[#8E8E93] mt-1">点击图片可刷新验证码</p>
+            </div>
+
+            <!-- 用户名 -->
+            <div class="mb-4">
+                <label class="block text-[15px] font-medium text-[#1C1C1E] mb-2">学号</label>
+                <input
+                    x-model="username"
+                    type="text"
+                    class="input-field"
+                    placeholder="请输入学号"
+                />
+            </div>
+
+            <!-- 密码 -->
+            <div class="mb-4">
+                <label class="block text-[15px] font-medium text-[#1C1C1E] mb-2">密码</label>
+                <input
+                    x-model="password"
+                    type="password"
+                    class="input-field"
+                    placeholder="请输入密码"
+                />
+            </div>
+
+            <!-- 验证码输入 -->
+            <div class="mb-6">
+                <label class="block text-[15px] font-medium text-[#1C1C1E] mb-2">输入验证码</label>
+                <input
+                    x-model="captcha"
+                    type="text"
+                    class="input-field"
+                    placeholder="请输入验证码"
+                    maxlength="4"
+                />
+            </div>
+
+            <!-- 登录按钮 -->
+            <button
+                @click="login()"
+                :disabled="loading"
+                class="btn-primary w-full flex items-center justify-center shadow-md"
+            >
+                <template x-if="loading">
+                    <svg class="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                </template>
+                <template x-if="!loading">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
+                        </path>
+                    </svg>
+                </template>
+                <span x-text="loading ? '登录中...' : '登录'"></span>
+            </button>
+        </div>
+
+        <!-- 说明 -->
+        <div class="mt-6 bg-[#F2F2F7] rounded-2xl p-4">
+            <h3 class="text-[15px] font-medium text-[#1C1C1E] mb-2">使用说明</h3>
+            <ul class="text-[13px] text-[#8E8E93] space-y-1">
+                <li>请使用教务系统的学号和密码登录</li>
+                <li>登录成功后，凭证将自动保存在本地</li>
+                <li>您的登录凭证仅存储在本地浏览器，不会上传到服务器</li>
+            </ul>
+        </div>
+
+        <!-- 错误提示 -->
+        <div x-show="errorMsg" x-transition class="bg-danger/10 text-danger p-4 rounded-2xl border border-danger/20 mt-4 flex items-start">
+            <svg class="w-5 h-5 mr-3 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-[15px]" x-text="errorMsg"></span>
+        </div>
+
+        <!-- 登录状态 -->
+        <div x-show="isLoggedIn" x-transition class="bg-success/10 text-success p-4 rounded-2xl border border-success/20 mt-4 flex items-start">
+            <svg class="w-5 h-5 mr-3 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <div>
+                <span class="text-[15px] font-medium">登录成功！</span>
+                <p class="text-[13px] mt-1">正在跳转到功能页面...</p>
+            </div>
+        </div>
+    </div>
+{{ end }}
+{{ define "scripts" }}
+    <script>
+        function loginApp() {
+            return {
+                username: '',
+                password: '',
+                captcha: '',
+                captchaUrl: '/api/proxy/verifycode.servlet',
+                loading: false,
+                errorMsg: '',
+                isLoggedIn: false,
+
+                init() {
+                    // 检查是否已有 Cookie
+                    const savedCookie = window.Storage.getJSON('qfnu_auth_cookie', '');
+                    if (savedCookie) {
+                        // 已有 Cookie，检查是否有效
+                        this.verifyCookie(savedCookie);
+                    }
+                },
+
+                refreshCaptcha() {
+                    // 添加时间戳避免缓存
+                    this.captchaUrl = '/api/proxy/verifycode.servlet?t=' + Date.now();
+                },
+
+                async verifyCookie(cookie) {
+                    try {
+                        const response = await axios.get('/api/v1/zhjw/grade', {
+                            headers: { 'Authorization': cookie }
+                        });
+
+                        if (response.data && response.data.code === 200) {
+                            this.isLoggedIn = true;
+                            setTimeout(() => {
+                                const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+                                window.location.href = redirect;
+                            }, 1500);
+                        }
+                    } catch (e) {
+                        // Cookie 无效，继续显示登录页面
+                        console.log('Cookie 已过期');
+                    }
+                },
+
+                async login() {
+                    // 验证输入
+                    if (!this.username) {
+                        this.errorMsg = '请输入学号';
+                        return;
+                    }
+                    if (!this.password) {
+                        this.errorMsg = '请输入密码';
+                        return;
+                    }
+                    if (!this.captcha) {
+                        this.errorMsg = '请输入验证码';
+                        return;
+                    }
+
+                    this.loading = true;
+                    this.errorMsg = '';
+
+                    try {
+                        // 构建表单数据
+                        const formData = new URLSearchParams();
+                        formData.append('userAccount', this.username);
+                        formData.append('userPassword', this.password);
+                        formData.append('RANDOMCODE', this.captcha);
+
+                        // 发送登录请求，通过后端代理
+                        const response = await fetch('/api/v1/zhjw/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: formData.toString()
+                        });
+
+                        const result = await response.json();
+
+                        if (result.code === 200 && result.data && result.data.cookie) {
+                            // 登录成功，保存 Cookie
+                            const cookie = result.data.cookie;
+
+                            // 保存到本地存储
+                            window.Storage.setJSON('qfnu_auth_cookie', cookie);
+                            window.Storage.setJSON('zhjw_logged_in', true);
+                            window.Storage.setJSON('zhjw_username', this.username);
+
+                            // 设置全局 authCookie
+                            window.authCookie = cookie;
+
+                            this.isLoggedIn = true;
+                            window.Toast.success('登录成功！');
+
+                            // 跳转到首页或之前访问的页面
+                            setTimeout(() => {
+                                const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+                                window.location.href = redirect;
+                            }, 1500);
+                        } else {
+                            // 登录失败
+                            this.errorMsg = result.msg || '登录失败，请检查输入信息';
+                            this.refreshCaptcha();
+                            this.captcha = '';
+                        }
+                    } catch (e) {
+                        console.error('登录错误:', e);
+                        this.errorMsg = '网络错误，请稍后重试';
+                        this.refreshCaptcha();
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            };
+        }
+    </script>
+{{ end }}

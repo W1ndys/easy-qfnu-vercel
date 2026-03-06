@@ -6,6 +6,7 @@
     <!-- JS 模块 -->
     <script src="/static/js/components/toast.js"></script>
     <script src="/static/js/utils/storage.js"></script>
+    <script src="/static/js/utils/auth.js"></script>
     <script src="/static/js/api/request.js"></script>
     <script src="/static/js/api/grade.js"></script>
 
@@ -18,38 +19,37 @@
             </p>
         </header>
 
-        <!-- Cookie 输入区 -->
+        <!-- 登录状态提示 -->
         <div class="card mb-4">
-            <div class="flex items-center justify-between mb-2">
-                <label class="text-[15px] font-medium text-[#1C1C1E]">
-                    教务系统 Cookie
-                </label>
-                <button x-show="cookieStr" @click="clearCookie()"
-                    class="text-[13px] text-[#8E8E93] hover:text-danger flex items-center transition-colors duration-150">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div x-show="isLoggedIn" class="flex items-center text-success">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-[15px] font-medium">已登录</span>
+                    </div>
+                    <div x-show="!isLoggedIn" class="flex items-center text-[#8E8E93]">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-[15px]">未登录</span>
+                    </div>
+                </div>
+                <button x-show="isLoggedIn" @click="logout()"
+                    class="text-[13px] text-danger hover:text-danger/80 flex items-center transition-colors duration-150">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
-                    清除
+                    退出登录
                 </button>
-            </div>
-            <div class="cookie-container" :class="{'is-blurred': cookieBlurred && cookieStr}">
-                <textarea x-model="cookieStr" rows="2"
-                    :class="{'cookie-blur': cookieBlurred && cookieStr}"
-                    @focus="cookieBlurred = false"
-                    @blur="cookieBlurred = true"
-                    class="input-field font-mono text-[13px]"
-                    placeholder="粘贴 Cookie，例如: JSESSIONID=abc123..."></textarea>
-            </div>
-            <p x-show="cookieStr" class="text-[11px] text-[#8E8E93] mt-2">
-                Cookie 已自动保存到本地，刷新页面后无需重新输入
-            </p>
-            <p class="text-[11px] text-[#8E8E93] mt-2">
-                <a href="https://mp.weixin.qq.com/s/zFK9c4ecpGdRwXSKzaVFnw" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
-                    不知道如何获取 Cookie？点击查看图文教程
+                <a x-show="!isLoggedIn" href="/login" class="text-[13px] text-primary hover:underline flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                    </svg>
+                    去登录
                 </a>
-            </p>
+            </div>
         </div>
 
         <!-- 筛选条件区 -->
@@ -386,8 +386,7 @@
         function gradeApp() {
             return {
                 // 数据
-                cookieStr: '',
-                cookieBlurred: true,
+                isLoggedIn: false,
                 result: null,
                 loading: false,
                 errorMsg: '',
@@ -440,23 +439,23 @@
 
                 // 方法
                 init() {
-                    // 从 localStorage 恢复 Cookie
-                    const savedCookie = window.Storage.getJSON('qfnu_auth_cookie', '');
-                    if (savedCookie) {
-                        this.cookieStr = savedCookie;
-                    }
-
-                    // 监听 Cookie 变化，保存到 localStorage
-                    this.$watch('cookieStr', (newValue) => {
-                        if (newValue && newValue.trim()) {
-                            window.Storage.setJSON('qfnu_auth_cookie', newValue.trim());
-                        }
-                    });
+                    // 检查登录状态
+                    this.checkLogin();
 
                     // 监听成绩变化，初始化勾选状态（默认全选）
                     this.$watch('grades', (newGrades) => {
                         this.selectedGrades = newGrades.map(() => true);
                     });
+                },
+
+                checkLogin() {
+                    const cookie = window.AuthUtil.getCookie();
+                    if (cookie) {
+                        this.isLoggedIn = true;
+                        window.authCookie = cookie;
+                    } else {
+                        this.isLoggedIn = false;
+                    }
                 },
 
                 getScoreClass(score) {
@@ -473,17 +472,14 @@
                 },
 
                 async fetchGrades() {
-                    if (!this.cookieStr) {
-                        this.errorMsg = '请先填写 Cookie';
+                    if (!this.isLoggedIn) {
+                        this.errorMsg = '请先登录';
                         return;
                     }
 
                     this.loading = true;
                     this.errorMsg = '';
                     this.result = null;
-
-                    // 设置全局 authCookie 供 request.js 使用
-                    window.authCookie = this.cookieStr.trim();
 
                     try {
                         const data = await window.GradeApi.getGrades({
@@ -495,6 +491,11 @@
                         this.result = data;
                     } catch (e) {
                         this.errorMsg = e.message || '请求失败';
+                        // 如果是 401 错误，提示重新登录
+                        if (e.message && e.message.includes('Cookie')) {
+                            this.isLoggedIn = false;
+                            window.AuthUtil.clearCookie();
+                        }
                     } finally {
                         this.loading = false;
                     }
@@ -521,10 +522,11 @@
                     }
                 },
 
-                clearCookie() {
-                    this.cookieStr = '';
-                    window.Storage.remove('qfnu_auth_cookie');
-                    window.Toast.success('Cookie 已清除');
+                logout() {
+                    window.AuthUtil.clearCookie();
+                    this.isLoggedIn = false;
+                    this.result = null;
+                    window.Toast.success('已退出登录');
                 }
             };
         }
